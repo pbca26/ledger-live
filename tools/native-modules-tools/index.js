@@ -9,7 +9,7 @@ function copyFolderRecursivelySync(source, target) {
 
   if (fs.statSync(source).isDirectory()) {
     const files = fs.readdirSync(source);
-    files.forEach(function(file) {
+    files.forEach(function (file) {
       var curSource = path.join(source, file);
       if (fs.statSync(curSource).isDirectory()) {
         copyFolderRecursivelySync(curSource, path.join(target, file));
@@ -171,7 +171,7 @@ function dependencyTree(modulePath, { root } = {}) {
 // Populates an 'externals' function given a list of native modules.
 // See: https://webpack.js.org/configuration/externals
 function buildWebpackExternals(nativeModules) {
-  return function({ context, request }, callback) {
+  return function ({ context, request }, callback) {
     try {
       const resolvedPath = require.resolve(request, { paths: [context] });
       const realResolvedPath = fs.realpathSync(resolvedPath);
@@ -200,6 +200,9 @@ function esBuildExternalsPlugin(nativeModules) {
     setup(build) {
       Object.values(nativeModules).forEach((module) => {
         build.onResolve({ filter: new RegExp(`^${module.name}`) }, (args) => {
+          if (args.resolveDir === "") {
+            return; // Ignore unresolvable paths
+          }
           try {
             const resolvedPath = require.resolve(args.path, {
               paths: [args.resolveDir],

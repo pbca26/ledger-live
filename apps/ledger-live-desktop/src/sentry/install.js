@@ -4,7 +4,7 @@ import pname from "./../logger/pname";
 import anonymizer from "./../logger/anonymizer";
 /* eslint-disable no-continue */
 
-require("../env");
+import "../env";
 
 export default (Raven: any, shouldSendCallback: () => boolean, userId: string) => {
   if (!__SENTRY_URL__) return;

@@ -75,7 +75,7 @@ const captureBreadcrumb = (breadcrumb: any) => {
   if (!process.env.STORYBOOK_ENV) {
     try {
       if (typeof window !== "undefined") {
-        require("~/sentry/browser").captureBreadcrumb(breadcrumb);
+        import("~/sentry/browser").then(sentry => sentry.captureBreadcrumb(breadcrumb));
       } else {
         require("~/sentry/node").captureBreadcrumb(breadcrumb);
       }
@@ -88,7 +88,7 @@ const captureBreadcrumb = (breadcrumb: any) => {
 const captureException = (error: Error) => {
   try {
     if (typeof window !== "undefined") {
-      require("~/sentry/browser").captureException(error);
+      import("~/sentry/browser").then(sentry => sentry.captureException(error));
     } else {
       require("~/sentry/node").captureException(error);
     }
