@@ -114,7 +114,41 @@ export class OperationsList extends PureComponent<Props, State> {
           filterOperation,
         });
 
-    const all = flattenAccounts(accounts || []).concat([account, parentAccount].filter(Boolean));
+    // KMD rewards claim op amount fix
+    // check ops for same txid, if both IN and OUT are present as ops correct amount and add a flag
+    const correctKMDRewards = (accounts) => {
+      let sameIdOperations = {};
+  
+      for (let i = 0; i < accounts.length; i++) {
+        for (let j = 0; j < accounts[i].operations.length; j++) {
+          if (accounts[i].operations[j].id.indexOf('komodo') > -1 && accounts[i].operations[j].fee.toNumber() > 0.0001) {
+            if (!sameIdOperations[accounts[i].operations[j].hash]) {
+              sameIdOperations[accounts[i].operations[j].hash] = [accounts[i].operations[j].type];
+            } else {
+              sameIdOperations[accounts[i].operations[j].hash].push(accounts[i].operations[j].type);
+            }
+          }
+        }
+      }
+  
+      for (let i = 0; i < accounts.length; i++) {
+        for (let j = 0; j < accounts[i].operations.length; j++) {
+          if (sameIdOperations[accounts[i].operations[j].hash] &&
+              sameIdOperations[accounts[i].operations[j].hash].indexOf('IN') > -1 &&
+              sameIdOperations[accounts[i].operations[j].hash].indexOf('OUT') > -1) {
+            if (accounts[i].operations[j].type === 'OUT') {
+              accounts[i].operations[j].value = accounts[i].operations[j].value.minus(accounts[i].operations[j].fee).minus(accounts[i].operations[j].fee);
+            }
+            accounts[i].operations[j].extra.KmdRewardsClaim = true;
+          }
+        }
+      }
+
+      return accounts;
+    };
+
+    const all = correctKMDRewards(flattenAccounts(accounts || []).concat([account, parentAccount].filter(Boolean)));
+
     const accountsMap = keyBy(all, "id");
 
     return (

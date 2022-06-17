@@ -372,7 +372,7 @@ const OperationD: React$ComponentType<Props> = (props: Props) => {
       ) : null}
       {(isNegative || fee) && (
         <OpDetailsSection>
-          <OpDetailsTitle>{t("operationDetails.fees")}</OpDetailsTitle>
+          <OpDetailsTitle>{operation.extra.KmdRewardsClaim ? t("operationDetails.extra.kmdRewards") : t("operationDetails.fees")}</OpDetailsTitle>
           <OpDetailsData>
             {fee ? (
               <Box alignItems="flex-end">

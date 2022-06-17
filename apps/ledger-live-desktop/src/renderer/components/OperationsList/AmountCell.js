@@ -35,6 +35,17 @@ class AmountCell extends PureComponent<Props> {
     const { currency, unit, operation } = this.props;
     const amount = getOperationAmountNumber(operation);
 
+    /*
+      This code bit is fixing KMD rewards (negative fee) subtraction bug
+      However, it doesn't take into account whether it's a self-send or not
+      if (operation.id.indexOf('komodo') > -1 &&
+          operation.fee.toNumber() > 0.0001) {
+        if (operation.type === 'OUT') {
+          amount = amount.plus(operation.fee).plus(operation.fee);
+        }
+      }
+    */
+
     // $FlowFixMe
     const specific = currency.family ? perFamilyOperationDetails[currency.family] : null;
 

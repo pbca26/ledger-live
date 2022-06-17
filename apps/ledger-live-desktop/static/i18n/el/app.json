@@ -1474,6 +1474,7 @@
       "rewardFrom": "Reward from",
       "memo": "Memo",
       "assetId": "Asset ID",
+      "kmdRewards": "Komodo Rewards",
       "rewards": "Earned rewards",
       "bondedAmount": "Bonded Amount",
       "unbondedAmount": "Unbonded Amount",
